@@ -3,10 +3,9 @@
 #
 FROM ubuntu:24.04
 RUN apt update
-RUN apt install -y stow git vim
+RUN apt install -y sudo
 RUN groupadd us && \
   useradd -m -g us me
-RUN mkdir /etc/sudoers.d
 RUN echo "me ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/me
 RUN mkdir /home/me/.dotcore/
 COPY . /home/me/.dotcore

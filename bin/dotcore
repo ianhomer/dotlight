@@ -2,4 +2,5 @@
 
 echo "running dotcore"
 
+dotcore-apt
 dotcore-stow
