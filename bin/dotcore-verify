@@ -6,11 +6,11 @@
 
 set -e
 
-if [[ "$DOTCORE_LOADED" != "y" ]] ; then
-  echo "dotcore not loaded"
+$(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
+
+if [[ "$DOTCORE_LOADED" != "y" ]]; then
+  log::exit "dotcore not loaded"
   exit 1
 fi
 
-echo "dotcore OK"
-
-
+log:: OK dotcore

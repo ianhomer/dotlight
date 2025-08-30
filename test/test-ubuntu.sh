@@ -10,7 +10,7 @@ if [[ ! -d ~/.colima ]]; then
   exit 1
 fi
 
-if [[ ! -f ~/.colima/docker.sock ]]; then
+if [[ ! -S ~/.colima/docker.sock ]]; then
   echo "Starting Colima"
   colima start
 fi

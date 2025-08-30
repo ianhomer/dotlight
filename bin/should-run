@@ -1,0 +1,243 @@
+#!/usr/bin/env bash
+#
+# Check if script has run since file updated. This can help to optimise
+# the running of scripts that only need to run if the contents of the
+# script have changed
+#
+
+set -e
+set -o noglob
+
+$(shim) && cd ${DOTCORE_DIR} && . ./bin/i.sh
+
+OPTIND=1
+while getopts "ab:ce:fhi:lm:norsuvz" o; do case "$o" in
+  a) all="y" ;;         # Reset global filter
+  b) context=$OPTARG ;; # Context for the run
+  c) clean="y" ;;       # Clean should run cache
+  e) exclude=$OPTARG ;; # Set global should run filter
+  f) force="y" ;;       # Force should run
+  h) help="y" ;;
+  i) include=$OPTARG ;;  # Set global should run filter
+  l) list="y" ;;         # List should run files
+  m) modified=$OPTARG ;; # Expiry time of should run file
+  n) noop="y" ;;         # No operation
+  o) otheronly="y" ;;    # Only check other files for modified
+  r) outrunfile="y" ;;   # Return the name of th should run file
+  s) silent="y" ;;       # Don't output message indicating what's done
+  u) update="y" ;;       # Update should run file
+  v) verbose="y" ;;      # Verbose output
+  z) changed="y" ;;      # Check whether other files status changed since last run
+  esac done
+
+shouldRunDir=~/.config/dotcore/should-run
+[[ -n "$verbose" ]] && echo "Should run dir : $shouldRunDir"
+
+if [[ -n "$help" ]]; then
+  noop="y"
+  cat <<EOF
+Usage
+
+Check if script needs to run
+
+  should-run $0 || exit
+
+Pass all arguments on current script into should-run, for example supporting
+pass through of "-f"
+
+  should-run $0 || exit
+
+Check if script needs to run, with expiry
+
+  should-run -m 1 $0  || exit  # 1 day
+  should-run -m 1h $0 || exit  # 1 hour
+
+Check whether other files have changed to trigger should run
+
+  should-run $0 otherfile || exit
+
+At end of script indicate that the script has run
+
+  should-run -fu $0
+
+Clean up run cache, forcing everything to be re-run
+
+  should-run -c
+
+Clean up just one cache, forcing it to re-run
+
+  should-run -c dotcore-stow
+
+EOF
+fi
+
+shift $((OPTIND - 1))
+
+[ "${1:-}" = "--" ] && shift
+if [[ -n $1 ]]; then
+  scriptName=${1##*/}
+  shift
+fi
+
+otherFiles=$*
+shouldRunFile=${shouldRunDir}/last-run-${scriptName}
+
+propertiesFile=$DOTCORE_CONFIG/should-run.properties
+
+if [[ -n "$include" ]] || [[ -n "$exclude" ]] || [[ -n "$all" ]]; then
+  mkdir -p $DOTCORE_CONFIG
+  if [[ -n "$include" ]]; then
+    log:: "setting should-run global include to $include"
+    echo "include=$include" >$propertiesFile
+  elif [[ -n "$exclude" ]]; then
+    log:: "setting should-run global exclude to $exclude"
+    echo "exclude=$exclude" >$propertiesFile
+  else
+    log:: "clearing should-run filters"
+    rm $propertiesFile
+  fi
+  [[ -z "$scriptName" ]] && noop=1
+fi
+
+function prop {
+  [[ ! -f "${propertiesFile}" ]] && return
+  grep "${1}" ${propertiesFile} | cut -d'=' -f2
+}
+
+excluded=0
+shouldRunInclude=$(prop include)
+if [[ -n "$shouldRunInclude" ]]; then
+  if ! [[ "$scriptName" =~ ${shouldRunInclude} ]]; then
+    excluded=1
+  fi
+fi
+shouldRunExclude=$(prop exclude)
+if [[ -n "$shouldRunExclude" ]]; then
+  if [[ "$scriptName" =~ ${shouldRunExclude} ]]; then
+    excluded=1
+  fi
+fi
+
+[[ -n "$list" ]] && noop="y" &&
+  ls -lt $shouldRunDir | awk '{$1=$2=$3=$4=$5=""; print $0}'
+
+if [[ -n "$clean" ]]; then
+  noop="y"
+  if [[ -d $shouldRunDir ]]; then
+    if [[ -n "$scriptName" ]]; then
+      if [[ -f $shouldRunFile ]]; then
+        echo "Cleaning should run file $scriptName in $shouldRunDir"
+        rm $shouldRunDir/last-run-$scriptName
+      else
+        echo "Should run file for $scriptName already deleted"
+      fi
+    else
+      echo "Cleaning should run files in $shouldRunDir"
+      rm $shouldRunDir/last-run-*
+    fi
+  else
+    echo "Directory $shouldRunDir does not exist, nothing to clean"
+  fi
+fi
+
+[[ -n "$noop" ]] && exit 0
+
+if [[ -z "$scriptName" ]]; then
+  log::exit Please pass script name "in" as argument to $(log::bold ${0##*/})
+fi
+
+[[ -n "$verbose" ]] && echo "Script : $scriptName"
+[[ -n "$verbose" ]] && [[ -n "${otherFiles}" ]] &&
+  echo "Other files : $otherFiles"
+
+shouldRun=0
+
+#
+# Check whether script should run
+#
+if [[ "$excluded" -eq 1 ]]; then
+  # should not run
+  shouldRun=0
+elif [[ -z "$force" ]] && [[ -f "$shouldRunFile" ]]; then
+  fullScriptName="${_DIR}/${scriptName}"
+  if [[ ! -f $fullScriptName ]]; then
+    fullScriptName=$(command -v ${scriptName})
+  fi
+  [[ -z "$fullScriptName" ]] &&
+    log::exit "Cannot find $scriptName to check whether it should run"
+  [[ -n "$verbose" ]] && echo "Full script name : $fullScriptName"
+
+  if [[ -z "$otheronly" ]] && [[ $fullScriptName -nt $shouldRunFile ]]; then
+    shouldRun=1
+  fi
+
+  # Compare against any other files provided
+  if [[ $shouldRun -eq 0 ]] && [[ -n "$otherFiles" ]]; then
+    for file in $otherFiles; do
+      if [[ -d $file ]]; then
+        # If other file is a directory then we should run if we find any files
+        # newer than the should run file.
+        if [[ -n "$created" ]]; then
+          newerFileCount=$(find $file -type f -cnewer $shouldRunFile -print | wc -l)
+        else
+          newerFileCount=$(find $file -type f -newer $shouldRunFile -print | wc -l)
+        fi
+        [[ $newerFileCount -gt 0 ]] && shouldRun=1
+      else
+        [[ $file -nt $shouldRunFile ]] && shouldRun=1
+      fi
+    done
+  fi
+
+  if [[ $shouldRun -eq 0 ]]; then
+    if [[ -n "$modified" ]]; then
+      # busybox (and other shell) versions of find do not support +1d and +1h
+      # syntax. Instead parse them into a more cross compatible version
+      if [[ "$modified" == *d ]]; then
+        modifiedArguments="-mtime +${modified::-1}"
+      elif [[ "$modified" == *h ]]; then
+        modifiedArguments="-mmin +$((${modified::-1} * 60))"
+      else
+        modifiedArguments="-mtime +${modified}"
+      fi
+
+      log::trace "Checking modified $modified"
+      if [[ $(find "$shouldRunFile" ${modifiedArguments} -print) ]]; then
+        shouldRun=1
+        log::trace "Should run expired, older than ${modified}"
+      fi
+    fi
+  fi
+else
+  shouldRun=1
+fi
+
+[[ -n "$verbose" ]] && echo "Should run : $shouldRun"
+
+#
+# Update the should run file
+#
+if [[ "$update" == "y" ]] && [[ $shouldRun -eq 1 ]]; then
+  [[ -n "$verbose" ]] && echo "Updating should run file : $shouldRunFile"
+  [[ ! -d $shouldRunDir ]] && mkdir -p $shouldRunDir
+  touch $shouldRunFile
+elif [[ $shouldRun -eq 0 ]]; then
+  if [[ $excluded -eq 1 ]]; then
+    shouldNotRunMessage="excluded globally"
+  elif [[ -n "$modified" ]]; then
+    shouldNotRunMessage="ran in last"
+    if [[ "$modified" == "1" ]]; then
+      shouldNotRunMessage="$notChangedMessage 1 day"
+    elif [[ "$modified" =~ ^[0-9]+$ ]]; then
+      shouldNotRunMessage="$notChangedMessage $modified days"
+    else
+      shouldNotRunMessage="$notChangedMessage $modified"
+    fi
+  else
+    shouldNotRunMessage="not changed since last run"
+  fi
+  [[ -z "$silent" ]] && log:: skip $scriptName $shouldNotRunMessage
+  exit 1
+else
+  log:: run $scriptName $context
+fi

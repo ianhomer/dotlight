@@ -1,6 +1,10 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-echo "running dotcore"
+set -e
+
+$(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
+
+log:: "updating dotfiles"
 
 dotcore-apt
 dotcore-stow

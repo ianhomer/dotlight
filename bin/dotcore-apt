@@ -6,14 +6,22 @@
 
 set -e
 
+should-run -m 7 dotcore-apt || exit 0
+
+$(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
+
 if [ $(sudo -n -l apt) = "/usr/bin/apt" ]; then
+  log:: "updating apt"
+
   sudo apt update
   sudo apt install -y \
     git \
     stow \
     vim
 else
-  echo "user does not have permission to run apt."
-  echo "consider add entry in /etc/sudoers"
+  log::warn "user does not have permission to run apt."
+  log::info "consider add entry in /etc/sudoers"
   exit
 fi
+
+should-run -fu dotcore-apt
