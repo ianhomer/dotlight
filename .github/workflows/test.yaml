@@ -6,8 +6,7 @@ jobs:
   test-dotcore:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.3.0
-      - name:
+      - uses: actions/checkout@v5.0.0
         run: |
           echo $SHELL
           sudo apt-get install stow
