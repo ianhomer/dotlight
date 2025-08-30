@@ -16,4 +16,5 @@ jobs:
           ./start
           . $HOME/.bash_profile
           . $HOME/.bashrc
-          ./bin/dotcore-verify
+          export PATH=${_DIR}/bin:${PATH}
+          dotcore-verify
