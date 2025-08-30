@@ -19,4 +19,4 @@ _DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DOTCORE_DIR="${_DIR}/.."
 cd ${DOTCORE_DIR}
 docker build -t local/ubuntu-dotfiles -f test/os/ubuntu/Dockerfile .
-docker run --rm -it local/ubuntu-dotfiles /bin/bash
+docker run --rm -it local/ubuntu-dotfiles /bin/bash -l

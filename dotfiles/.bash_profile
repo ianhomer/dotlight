@@ -6,4 +6,8 @@
 
 echo "... running .bash_profile from dotfiles"
 
+PATH=$PATH:$HOME/.dotcore/bin
+
+export DOTCORE_LOADED="y"
+
 source ~/.bashrc
