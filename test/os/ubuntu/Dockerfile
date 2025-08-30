@@ -3,7 +3,7 @@
 #
 FROM ubuntu:24.04
 RUN apt update
-RUN apt install -y stow git
+RUN apt install -y stow git vim
 RUN groupadd us && \
   useradd -m -g us me
 RUN mkdir /etc/sudoers.d

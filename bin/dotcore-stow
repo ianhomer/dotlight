@@ -2,7 +2,12 @@
 
 _DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 DOTCORE_DIR="${_DIR}/.."
+DOTFILES_DIR=${DOTCORE_DIR}/dotfiles
 
-cd ${DOTCORE_DIR}/dotfiles
 echo "stowing dotfiles"
-stow . -v -t $HOME
+
+cd ${DOTFILES_DIR}
+for DIR in $(ls -d *); do
+  echo "... stowing $DIR"
+  stow -v --dotfiles -t $HOME $DIR
+done
