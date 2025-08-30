@@ -6,11 +6,11 @@ Core and lightweight OS configuration. Developer containers, baseline installs. 
 
 Clone
 
-   git clone https://github.com/ianhomer/dotlight ~/.dotlight
+    git clone https://github.com/ianhomer/dotlight ~/.dotlight
 
 And install with
 
-   ~/.dotlight/start
+    ~/.dotlight/start
 
 ## Related
 
