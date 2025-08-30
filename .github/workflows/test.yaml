@@ -16,4 +16,4 @@ jobs:
           ./start
           . $HOME/.bash_profile
           . $HOME/.bashrc
-          dotcore-verify
+          ./bin/dotcore-verify
