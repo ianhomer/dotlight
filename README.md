@@ -1,16 +1,16 @@
-# dotlight
+# dotcore
 
-Core and lightweight OS configuration. Developer containers, baseline installs. Prioritisation for reliability and stability. 
+Core and lightweight OS configuration. Developer containers, baseline installs. Prioritisation for reliability and stability.
 
 ## Getting Started
 
 Clone
 
-    git clone https://github.com/ianhomer/dotlight ~/.dotlight
+    git clone https://github.com/ianhomer/dotcore ~/.dotcore
 
 And install with
 
-    ~/.dotlight/start
+    ~/.dotcore/start
 
 ## Related
 

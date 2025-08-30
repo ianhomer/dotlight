@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+#
+# Verify dotme install AOK
+#
+
+set -e
+
+if [[ "$DOTCORE_LOADED" != "y" ]] ; then
+  echo "dotcore not loaded"
+  exit 1
+fi
+
+echo "dotcore OK"
+
+

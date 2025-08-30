@@ -1,0 +1,19 @@
+name: test
+
+on: [push, workflow_dispatch]
+
+jobs:
+  test-dotcore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - name:
+        run: |
+          echo $SHELL
+          sudo apt-get install stow
+          rm ~/.bashrc
+          rm ~/.bash_profile
+          ./start
+          . $HOME/.bash_profile
+          . $HOME/.bashrc
+          dotcore-verify

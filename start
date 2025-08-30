@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+#
+# This script can be used first time to start using dotlight
+#
+
+set -e
+
+echo "initialising dotcore"
+
+_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+echo "dotcore directory : ${_DIR}"
+
+export PATH=${_DIR}/bin:${PATH}
+
+dotcore
+
+echo
+echo "dotcore has been set up OK"
+echo

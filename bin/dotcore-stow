@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DOTCORE_DIR="${_DIR}/.."
+
+cd ${DOTCORE_DIR}/dotfiles
+echo "stowing dotfiles"
+stow . -v -t $HOME
