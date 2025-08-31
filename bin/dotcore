@@ -9,6 +9,7 @@ command_apply() {
   dotcore-pull
   dotcore-apt
   dotcore-stow
+  dotcore-snap
 }
 
 while getopts "F" opt; do
