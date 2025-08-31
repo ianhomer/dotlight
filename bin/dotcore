@@ -4,8 +4,8 @@ set -e
 
 $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 
-command_install() {
-  log:: "installing dotfiles"
+command_apply() {
+  log:: "applying dotfiles"
   dotcore-pull
   dotcore-apt
   dotcore-stow
@@ -28,7 +28,7 @@ if [[ -n "$FORCE_ALL" ]]; then
   done
 fi
 
-COMMAND=${1:-install}
+COMMAND=${1:-apply}
 command_${COMMAND} $@
 if [ $? = 127 ]; then
   echo "'$COMMAND_NAME' is not a known command or has errors." >&2

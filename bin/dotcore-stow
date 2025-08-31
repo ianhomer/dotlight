@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+SHOULD_RUN_ARGS=""
+
+while getopts "f" o; do case "$o" in
+  f) SHOULD_RUN_ARGS="${SHOULD_RUN_ARGS} -f" ;;
+  v) VERBOSE="y" ;;
+  esac done
+
+should-run -z $SHOULD_RUN_ARGS $0 || exit 0
 $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 
 DOTFILES_DIR=${DOTCORE_DIR}/dotfiles
@@ -9,5 +17,11 @@ log:: "stowing dotfiles"
 cd ${DOTFILES_DIR}
 for DIR in $(ls -d *); do
   log:: "... stowing $DIR"
-  stow -v --dotfiles -t $HOME $DIR
+  if should-run -ozs -b ${DIR%/} $SHOULD_RUN_ARGS ${0} "$DOTFILES_DIR/$DIR" -; then
+    stow -v --dotfiles -t $HOME $DIR
+  elif [[ -n $VERBOSE ]]; then
+    log:: "skipped stowing of $DIR"
+  fi
 done
+
+should-run -fu $0
