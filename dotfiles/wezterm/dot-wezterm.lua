@@ -229,7 +229,7 @@ local function tab_title(tab)
     return "~"
   end
   local relative_working_dir = get_relative_working_dir(tab)
-  if relative_working_dir == ".dotfiles" then
+  if relative_working_dir == ".dotcore" then
     return "."
   elseif relative_working_dir == "things" then
     return "󰧮"
@@ -290,7 +290,7 @@ end)
 wezterm.on("gui-startup", function(_)
   local _, _, window = wezterm.mux.spawn_window({})
   window:gui_window():maximize()
-  local _, second_pane, _ = window:spawn_tab({ cwd = wezterm.home_dir .. "/.dotfiles" })
+  local _, second_pane, _ = window:spawn_tab({ cwd = wezterm.home_dir .. "/.dotcore" })
   local _, third_pane, _ = window:spawn_tab({ cwd = wezterm.home_dir .. "/projects/things" })
   window:spawn_tab({ cwd = wezterm.home_dir .. "/projects" })
 
