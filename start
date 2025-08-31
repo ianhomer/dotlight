@@ -14,6 +14,7 @@ echo "dotcore directory : ${_DIR}"
 export PATH=${_DIR}/bin:${PATH}
 
 dotcore
+shim -u
 
 echo
 echo "dotcore has been set up OK"
