@@ -4,38 +4,38 @@
 function log::() {
   mode=$1
   case $mode in
-    box) shift && log::box ${@} ;;
-    error) shift && log::error ${@} ;;
-    skip) shift && log::action skip ${@} ;;
-    status) shift && log::status ${@} ;;
-    IS) shift && log::status IS "${@}" ;;
-    OK) shift && log::status OK "${@}" ;;
-    AOK) shift && log::status AOK "${@}" ;;
-    NOK) shift && log::status NOK "${@}" ;;
-    *) log::info ${@}
+  box) shift && log::box ${@} ;;
+  error) shift && log::error ${@} ;;
+  skip) shift && log::action skip ${@} ;;
+  status) shift && log::status ${@} ;;
+  IS) shift && log::status IS "${@}" ;;
+  OK) shift && log::status OK "${@}" ;;
+  AOK) shift && log::status AOK "${@}" ;;
+  NOK) shift && log::status NOK "${@}" ;;
+  *) log::info ${@} ;;
   esac
 }
 
 function log::trim() {
   width=$1
-  (( ${#2} > $width )) && printf "${2:0:$((width-3))}..." || printf "$2"
+  ((${#2} > $width)) && printf "${2:0:$((width - 3))}..." || printf "$2"
 }
 
 function log::box() {
-  cols=`tput cols`
+  cols=$(tput cols)
   left=$((cols / 2))
   right=$((cols - left))
-  one=`log::trim $left "$1"`
-  two=`log::trim $right "$2"`
+  one=$(log::trim $left "$1")
+  two=$(log::trim $right "$2")
   printf "\e[0;35m%-${left}s\e[36m%${right}s\e[0m\n" "$one" "$two"
 }
 
 function log::table() {
-  cols=`tput cols`
+  cols=$(tput cols)
   left="$1"
   right=$((cols - left))
-  one=`log::trim "$left" "$2 "`
-  two=`log::trim "$right" "$3"`
+  one=$(log::trim "$left" "$2 ")
+  two=$(log::trim "$right" "$3")
   printf "\e[0;35m%${left}s\e[36m%-${right}s\e[0m\n" "$one" "$two"
 }
 
@@ -45,7 +45,8 @@ function log::table() {
 function log::status() {
   status=$1
   thing=$2
-  shift; shift
+  shift
+  shift
   message=$@
   [[ "$status" == "NOK" ]] && color="33" || color="36"
   printf "\e[36m%-10s \e[${color}m \e[1m%-5s\e[38;5;238m%s\e[0m\n" "$thing" \
@@ -83,7 +84,7 @@ function log::action() {
   action=$1
   thing=$2
   message=${*:-3}
-  printf "\e[37m${action} \e[1m%-15s\e[0;37m %s\e[0m\n" "$thing" "$message"
+  printf "\e[37m${action} \e[1m%-16s\e[0;37m %s\e[0m\n" "$thing" "$message"
 }
 
 function log::bold() {
@@ -123,10 +124,18 @@ function log::palette() {
   printf "\e[0m\n"
   printf "\e[38;5;238m%10s\e[0m\n" "very light grey"
   printf "\e[48;5;238m%10s\e[0m\n" "very light grey"
-  for i in {1..7} ; do for j in {1..31} ; do
-    printf "\e[38;5;$(( i*32 + j))m─\e[0m" ;
-  done ; printf "\n" ; done ; echo
-  for i in {0..7} ; do for j in {0..31} ; do
-    printf "\e[48;5;$(( i*32 + j))m \e[0m" ;
-  done ; printf "\n" ; done ; echo
+  for i in {1..7}; do
+    for j in {1..31}; do
+      printf "\e[38;5;$((i * 32 + j))m─\e[0m"
+    done
+    printf "\n"
+  done
+  echo
+  for i in {0..7}; do
+    for j in {0..31}; do
+      printf "\e[48;5;$((i * 32 + j))m \e[0m"
+    done
+    printf "\n"
+  done
+  echo
 }
