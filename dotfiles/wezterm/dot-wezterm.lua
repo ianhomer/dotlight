@@ -53,8 +53,6 @@ end
 local window_background = "#1f1f28"
 
 -- This is where you actually apply your config choices
-
-config.font = wezterm.font("FiraCode Nerd Font", { weight = "Medium" })
 config.font_size = 12.3
 config.line_height = 1.15
 
