@@ -10,7 +10,7 @@ should-run -m 7 $0 || exit 0
 
 $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 
-APT_ACCESS_RESPONSE=$(sudo -n -l apt)
+APT_ACCESS_RESPONSE=$(sudo -n -l apt || true)
 
 if [ "${APT_ACCESS_RESPONSE}" == "/usr/bin/apt" ]; then
   log:: "updating apt"
@@ -23,10 +23,8 @@ if [ "${APT_ACCESS_RESPONSE}" == "/usr/bin/apt" ]; then
 elif [ "${APT_ACCESS_RESPONSE}" == "sudo: a password is required" ]; then
   log::warn "password is required for sudo to run apt"
   log::info "please run 'sudo apt update' manually and re-run"
-  exit
 else
   log::warn "user does not have permission to run apt."
-  exit
 fi
 
 should-run -fu $0
