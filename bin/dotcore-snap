@@ -11,9 +11,14 @@ should-run -m 7 $0 || exit 0
 $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 
 if command -v snap >/dev/null; then
+
   SNAP_ACCESS_RESPONSE=$(sudo -n -l snap || true)
 
-  if [ "${SNAP_ACCESS_RESPONSE}" == "/usr/bin/snap" ]; then
+  if [[ ! -S /run/snapd.socket ]]; then
+    log::warn "snap daemon not running, skipping"
+    log::info "Start with 'sudo systemctl start snapd' and rerun"
+  elif [ "${SNAP_ACCESS_RESPONSE}" == "/usr/bin/snap" ]; then
+
     log:: "updating snap"
 
     sudo snap refresh
