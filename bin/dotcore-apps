@@ -48,7 +48,7 @@ if [[ -n "${APT_REQUIRED_APPS}${SNAP_REQUIRED_APPS}" ]]; then
     log::warn "The following apps are required"
     log::warn "${SNAP_REQUIRED_APPS}"
     log::info "You can run"
-    log::info "apt install -y ${SNAP_REQUIRED_APPS}"
+    log::info "snap install ${SNAP_REQUIRED_APPS} --classic"
   fi
   log::exit
 fi
