@@ -6,17 +6,21 @@
 
 should-run -m 7 dotcore-fisher || exit 0
 
-printf "\e[36mInstalling fisher packages\e[0m\n"
+if not test -f "$HOME/.config/fish/functions/_fzf_wrapper.fish"
+    printf "\e[36mInstalling fisher packages\e[0m\n"
 
-set packages \
-    edc/bass@v1.0 \
-    jorgebucaran/nvm.fish@v2.2.17 \
-    IlanCosman/tide@v6.2.0 \
-    PatrickF1/fzf.fish@v10.3
+    set packages \
+        edc/bass@v1.0 \
+        jorgebucaran/nvm.fish@v2.2.17 \
+        IlanCosman/tide@v6.2.0 \
+        PatrickF1/fzf.fish@v10.3
 
-for package in $packages
-    fisher ls | grep "$package" || fisher install "$package"
-    echo $package
+    for package in $packages
+        fisher ls | grep "$package" || fisher install "$package"
+        echo $package
+    end
+else
+    printf "\e[36mfisher packages already installed\e[0m\n"
 end
 
 should-run -fu dotcore-fisher

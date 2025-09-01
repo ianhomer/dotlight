@@ -9,8 +9,12 @@ printf "\e[36mConfiguring fish shell\e[0m\n"
 
 fish_add_path ~/.dotcore/bin
 
-tide configure --auto --style=Lean --prompt_colors='True color' \
-    --show_time=No --lean_prompt_height='One line' --prompt_spacing=Compact \
-    --icons='Many icons' --transient=No
+if test "$tide_prompt_add_newline_before" = "true"
+    tide configure --auto --style=Lean --prompt_colors='True color' \
+        --show_time=No --lean_prompt_height='One line' --prompt_spacing=Compact \
+        --icons='Many icons' --transient=No
+else
+    printf "\e[36mtide prompt already configured\e[0m\n"
+end
 
 should-run -fu dotcore-fish
