@@ -3,7 +3,7 @@
 #
 FROM ubuntu:24.04
 RUN apt update
-RUN apt install -y sudo git snapd stow vim neovim
+RUN apt install -y sudo curl fd-find fish fzf git snapd stow vim neovim
 RUN groupadd us && \
   useradd -m -g us me
 RUN echo "me ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/me

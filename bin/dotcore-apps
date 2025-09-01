@@ -10,7 +10,7 @@ should-run -m 7 $0 || exit 0
 
 $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 
-APT_APPS="git snap stow vim"
+APT_APPS="curl fish fdfind fzf git snap stow vim"
 APT_REQUIRED_APPS=""
 
 for app in ${APT_APPS}; do
@@ -18,6 +18,8 @@ for app in ${APT_APPS}; do
   if ! command -v $app &>/dev/null; then
     if [[ "$app" == "snap" ]]; then
       package="snapd"
+    elif [[ "$app" == "fdfind" ]]; then
+      package="fd-find"
     else
       package=$app
     fi

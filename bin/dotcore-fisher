@@ -1,0 +1,30 @@
+#!/usr/bin/env fish
+
+#
+# Install fisher, a package manager for fish
+#
+
+should-run -m 7 dotcore-fisher || exit 0
+
+printf "\e[36mInstalling fisher packages\e[0m\n"
+
+# Update all fisher plugins
+
+fisher update
+
+set packages \
+    edc/bass@v1.0 \
+    jorgebucaran/nvm.fish@v2.2.17 \
+    IlanCosman/tide@v6.2.0 \
+    PatrickF1/fzf.fish@v10.3
+
+for package in $packages
+    fisher ls | grep "$package" || fisher install "$package"
+    echo $package
+end
+
+tide configure --auto --style=Lean --prompt_colors='True color' \
+  --show_time=No --lean_prompt_height='One line' --prompt_spacing=Compact \
+  --icons='Many icons' --transient=No
+
+should-run -fu dotcore-fisher

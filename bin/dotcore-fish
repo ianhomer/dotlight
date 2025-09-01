@@ -1,0 +1,12 @@
+#!/usr/bin/env fish
+#
+# Configure fish
+#
+
+should-run -m 7 $argv dotcore-fish || exit 0
+
+printf "\e[36mConfiguring fish shell\e[0m\n"
+
+fish_add_path ~/.dotcore/bin
+
+should-run -fu dotcore-fish
