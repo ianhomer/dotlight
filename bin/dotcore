@@ -2,6 +2,9 @@
 
 set -e
 
+_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+PATH=${_DIR}:${PATH}
+
 $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 
 command_apply() {
@@ -14,8 +17,14 @@ command_apply() {
   dotcore-fisher
 }
 
-while getopts "F" opt; do
+while getopts "e:i:F" opt; do
   case "$opt" in
+  e)
+    EXCLUDES=$OPTARG
+    ;;
+  i)
+    INCLUDES=$OPTARG
+    ;;
   F)
     FORCE_ALL=1
     ;;
@@ -29,6 +38,15 @@ if [[ -n "$FORCE_ALL" ]]; then
   for f in ${DOTCORE_DIR}/bin/dotcore-*; do
     should-run -c ${f##*/}
   done
+fi
+
+if [[ -n "$EXCLUDES" ]] || [[ -n "$INCLUDES" ]]; then
+  if [[ -n "$EXCLUDES" ]]; then
+    should-run -e "$EXCLUDES"
+  else
+    should-run -i "$INCLUDES"
+  fi
+  exit 0
 fi
 
 COMMAND=${1:-apply}

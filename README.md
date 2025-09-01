@@ -2,7 +2,7 @@
 
 Core and lightweight OS configuration. Developer containers, baseline installs. Prioritisation for reliability and stability.
 
-## Getting Started
+## Getting started
 
 Clone
 
@@ -11,6 +11,16 @@ Clone
 And install with
 
     ~/.dotcore/start
+
+## Local testing
+
+Sanity test
+
+    test/test-ubuntu.sh
+
+Run GitHub Actions locally with [act](https://nektosact.com/usage/index.html)
+
+    act
 
 ## Related
 
