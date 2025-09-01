@@ -14,7 +14,6 @@ APT_APPS="curl fish fdfind fzf git snap stow vim"
 APT_REQUIRED_APPS=""
 
 for app in ${APT_APPS}; do
-
   if ! command -v $app &>/dev/null; then
     if [[ "$app" == "snap" ]]; then
       package="snapd"
@@ -31,11 +30,9 @@ SNAP_APPS="nvim"
 SNAP_REQUIRED_APPS=""
 
 for app in ${SNAP_APPS}; do
-
   if ! command -v $app &>/dev/null; then
     SNAP_REQUIRED_APPS="${SNAP_REQUIRED_APPS}$app "
   fi
-
 done
 
 if [[ -n "${APT_REQUIRED_APPS}${SNAP_REQUIRED_APPS}" ]]; then
@@ -52,6 +49,15 @@ if [[ -n "${APT_REQUIRED_APPS}${SNAP_REQUIRED_APPS}" ]]; then
     log::info "You can run"
     log::info "snap install ${SNAP_REQUIRED_APPS} --classic"
   fi
+  log::exit
+fi
+
+# fd is installed as findfd with apt on ubunutu
+# https://github.com/sharkdp/fd/issues/791
+
+if [[ -x /usr/bin/fdfind ]] && [[ ! -x /usr/bin/fd ]] ; then
+  log::warn "fd installed as fdfind, please link to fd"
+  log::warn "please run 'sudo ln -s /usr/bin/fdfind /usr/bin/fd'"
   log::exit
 fi
 
