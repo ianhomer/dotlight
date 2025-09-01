@@ -128,8 +128,6 @@ if [[ -n "$clean" ]]; then
       if [[ -f $shouldRunFile ]]; then
         echo "Cleaning should run file $scriptName in $shouldRunDir"
         rm $shouldRunDir/last-run-$scriptName
-      else
-        echo "Should run file for $scriptName already deleted"
       fi
     else
       echo "Cleaning should run files in $shouldRunDir"
