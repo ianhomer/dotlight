@@ -10,7 +10,7 @@ jobs:
       - name: test
         run: |
           echo $SHELL
-          sudo apt-get install stow nvim
+          sudo apt-get install stow neovim
           rm ~/.bashrc
           rm ~/.bash_profile
           ./start
