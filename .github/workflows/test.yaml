@@ -10,7 +10,7 @@ jobs:
       - name: test
         run: |
           echo $SHELL
-          sudo apt-get curl fd-find fish fzf install stow neovim
+          sudo apt-get fd-find fish fzf install stow neovim
           rm ~/.bashrc
           rm ~/.bash_profile
           ./start
