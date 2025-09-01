@@ -13,8 +13,8 @@ command_apply() {
   dotcore-apps
   dotcore-stow
   dotcore-projects
-  dotcore-fish
   dotcore-fisher
+  dotcore-fish
 }
 
 while getopts "e:i:F" opt; do
