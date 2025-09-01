@@ -2,6 +2,11 @@ if status --is-interactive
     source ~/.config/fish/aliases.fish
     source ~/.config/fish/functions.fish
 
+    # Time between escape key press and subsequent character, by default this is
+    # very small and you have you have to be quick to trigger "ESC dot" to get
+    # last argument from history
+    set -g fish_escape_delay_ms 200
+
     #
     # Tweak colors for me - noise reduction, red/green color blind and
     # long-sighted.
