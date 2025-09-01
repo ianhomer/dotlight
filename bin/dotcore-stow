@@ -18,7 +18,11 @@ cd ${DOTFILES_DIR}
 for DIR in $(ls -d *); do
   log:: "... stowing $DIR"
   if should-run -ozs -b ${DIR%/} $SHOULD_RUN_ARGS ${0} "$DOTFILES_DIR/$DIR" -; then
-    stow -v --dotfiles -t $HOME $DIR
+    # --no-folding to get linking on a per file basis, vs on a directory level
+    # this gives more fine grained control and does not bring files from other
+    # processes into the git managed dotfiles. Any can be brought in explicitly
+    # if needed by copying in.
+    stow -v --no-folding --dotfiles -t $HOME $DIR
   elif [[ -n $VERBOSE ]]; then
     log:: "skipped stowing of $DIR"
   fi
