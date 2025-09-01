@@ -12,9 +12,10 @@ jobs:
           echo $SHELL
           sudo apt update
           sudo apt install -y fish stow
-          # exclude pull, apps amd fisher from CI run
-          ./bin/dotcore -e "apps|pull|fisher"
-          rm ~/.bashrc
+          # exclude apps, fisher and pull from CI test
+          ./bin/dotcore -e "apps|fisher|pull"
+          rm -f ~/.bashrc
+          rm -f ~/.bash_profile
           ./start
           . $HOME/.bash_profile
           . $HOME/.bashrc
