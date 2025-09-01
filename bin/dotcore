@@ -7,9 +7,8 @@ $(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
 command_apply() {
   log:: "applying dotfiles"
   dotcore-pull
-  dotcore-apt
+  dotcore-apps
   dotcore-stow
-  dotcore-snap
   dotcore-projects
 }
 

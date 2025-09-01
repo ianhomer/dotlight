@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+#
+# Check app dependencies
+#
+
+set -e
+
+should-run -m 7 $0 || exit 0
+
+$(shim) && cd ${DOTCORE_DIR} && . bin/i.sh
+
+APT_APPS="git snap stow vim"
+APT_REQUIRED_APPS=""
+
+for app in ${APT_APPS}; do
+
+  if ! command -v $app &>/dev/null; then
+    if [[ "$app" == "snap" ]]; then
+      package="snapd"
+    else
+      package=$app
+    fi
+    APT_REQUIRED_APPS="${APT_REQUIRED_APPS}$package "
+  fi
+done
+
+SNAP_APPS="nvim"
+SNAP_REQUIRED_APPS=""
+
+for app in ${SNAP_APPS}; do
+
+  if ! command -v $app &>/dev/null; then
+    SNAP_REQUIRED_APPS="${SNAP_REQUIRED_APPS}$app "
+  fi
+
+done
+
+if [[ -n "${APT_REQUIRED_APPS}${SNAP_REQUIRED_APPS}" ]]; then
+  if [[ -n "${APT_REQUIRED_APPS}" ]]; then
+    log::warn "The following apps are required"
+    log::warn "${APT_REQUIRED_APPS}"
+    log::info "You can run"
+    log::info "apt install -y ${APT_REQUIRED_APPS}"
+    log::exit
+  fi
+  if [[ -n "${SNAP_REQUIRED_APPS}" ]]; then
+    log::warn "The following apps are required"
+    log::warn "${SNAP_REQUIRED_APPS}"
+    log::info "You can run"
+    log::info "apt install -y ${SNAP_REQUIRED_APPS}"
+  fi
+  log::exit
+fi
+
+should-run -fu $0
