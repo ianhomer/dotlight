@@ -8,10 +8,6 @@ should-run -m 7 dotcore-fisher || exit 0
 
 printf "\e[36mInstalling fisher packages\e[0m\n"
 
-# Update all fisher plugins
-
-fisher update
-
 set packages \
     edc/bass@v1.0 \
     jorgebucaran/nvm.fish@v2.2.17 \
