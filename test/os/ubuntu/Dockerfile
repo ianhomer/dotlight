@@ -1,9 +1,9 @@
 #
 # Ubuntu image for dotfile validation
 #
-FROM ubuntu:24.04
+FROM ubuntu:25.10
 RUN apt update
-RUN apt install -y curl fd-find fish fzf git snapd stow sudo vim neovim
+RUN apt install -y curl fd-find fish fzf git snapd stow sudo vim neovim zsh
 RUN ln -s /usr/bin/fdfind /usr/bin/fd
 RUN groupadd us && \
   useradd -m -g us me
